@@ -1,9 +1,7 @@
-import json
 import discord
 
-# 自分のBotのアクセストークンに置き換えてください
-with open("secret.json", "r", encoding="utf-8") as f:
-    TOKEN = json.load(f)["discord"]["token"]
+import settings
+
 
 # 接続に必要なオブジェクトを生成
 client = discord.Client(intents=discord.Intents.all())
@@ -25,4 +23,4 @@ async def on_message(message):
         await message.channel.send('にゃーん')
 
 # Botの起動とDiscordサーバーへの接続
-client.run(TOKEN)
+client.run(settings.TOKEN)
