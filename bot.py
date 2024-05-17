@@ -3,6 +3,7 @@ from discord.ext import commands
 
 import settings
 
+import awake
 
 class Isaribi(commands.Bot):
     def __init__(self, intents: discord.Intents = discord.Intents.default()) -> None:
