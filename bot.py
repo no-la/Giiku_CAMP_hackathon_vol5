@@ -1,26 +1,35 @@
 import discord
+from discord.ext import commands
 
 import settings
 
 
-# 接続に必要なオブジェクトを生成
-client = discord.Client(intents=discord.Intents.all())
+class Isaribi(commands.Bot):
+    def __init__(self, intents: discord.Intents = discord.Intents.default()) -> None:
+        super().__init__(command_prefix="/", intents=intents)
+        self.guild: discord.Guild = ... # setup_hookで初期化する
 
-# 起動時に動作する処理
-@client.event
-async def on_ready():
-    # 起動したらターミナルにログイン通知が表示される
-    print('ログインしました')
+    
+    async def setup_hook(self):
+        guild = discord.Object(settings.GUILD_ID)
+        # Cogを読み込む
+        for m in ["test_cog"]:
+            await self.load_extension(f"cogs.{m}")
+        appcommand_list = await self.tree.sync(guild=guild)
+        
+        print("Available App Commands",
+              "-"*10,
+            *appcommand_list,
+            sep="\n"
+            )
 
 
-# メッセージ受信時に動作する処理
-@client.event
-async def on_message(message):
-    if message.author.bot:
-        return
-    # 「/neko」と発言したら「にゃーん」が返る処理
-    if message.content == '/neko':
-        await message.channel.send('にゃーん')
+#Discordオブジェクトの生成
+bot = Isaribi(intents=discord.Intents.all())
+
+private_channel_permission_overwrite = discord.PermissionOverwrite()
+private_channel_permission_overwrite.read_messages = True
+
 
 # Botの起動とDiscordサーバーへの接続
-client.run(settings.TOKEN)
+bot.run(settings.TOKEN)
