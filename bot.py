@@ -1,4 +1,5 @@
 import discord
+import os
 from discord.ext import commands
 
 import settings
@@ -13,9 +14,13 @@ class MyBot(commands.Bot):
     
     async def setup_hook(self):
         guild = discord.Object(settings.GUILD_ID)
+        # cogsフォルダ内のすべての.pyファイルを取得
+        cog_files = [f[:-3] for f in os.listdir('./cogs') if f.endswith('.py')]
+        
         # Cogを読み込む
-        for m in ["test_cog"]:
-            await self.load_extension(f"cogs.{m}")
+        for cog in cog_files:
+            await self.load_extension(f"cogs.{cog}")
+            
         appcommand_list = await self.tree.sync(guild=guild)
         
         print(
