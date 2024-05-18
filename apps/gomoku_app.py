@@ -1,14 +1,18 @@
+from PIL import Image, ImageDraw, ImageFont
+
 from config import settings
 from utils import file_utils
 
 
+
 EMPTY = "."
+IMG_PATH = file_utils.join_path(settings.RESOURCE_DIR_PATH, "gomoku_temp.jpg")
 class Gomoku:
     def __init__(self, n: int) -> None:
         self.n = n
         self.board = [[EMPTY]*n for _ in range(n)]
         self.count = 0
-        self.win_num = 3
+        self.win_num = 5
         self.winner = None
     
     def get_turn(self):
@@ -58,13 +62,60 @@ class Gomoku:
             rev += "\n"+"".join(map(str, l))
         return rev
         
-    def get_formatted_board(self):
+    def get_formatted_board(self) -> str:
         rev = "".join(map(lambda x: self.get_fomatted_element(x), self.board[0]))
         for l in self.board[1:]:
             rev += "\n" + "".join(map(lambda x: self.get_fomatted_element(x), l))
         return rev
     
-    def get_fomatted_element(self, tar: int|str):
+    def get_fomatted_element(self, tar: int|str) -> str:
         COLORS = ["⚪", "⚫"]
         return COLORS[tar] if isinstance(tar, int) else "🟦"
+
+    def make_board_img(self) -> None:
+        cell_size = 30
+        size = self.n*cell_size
+        img = Image.new("RGB", (size, size), (234, 212, 151))
+        font = ImageFont.load_default()
+        font.size = 20
+        
+        draw = ImageDraw.Draw(img)
+        
+        margin = 30
+        converted_cell_size = (size-margin)/self.n
+        # draw grid
+        for i in range(self.n):
+            for j in range(self.n):
+                x1 = i*converted_cell_size + margin/2
+                y1 = j*converted_cell_size + margin/2
+                x2 = x1 + converted_cell_size
+                y2 = y1 + converted_cell_size
+                draw.rectangle([x1, y1, x2, y2], outline="black")
+                
+        # draw index
+        delta = converted_cell_size/2
+        for i in range(self.n):
+            delta_by_digit = (len(str(i))-1)*5
+            draw.text((i*converted_cell_size+margin/2 + delta - margin/10 - delta_by_digit, delta/3 - 2),
+                      str(i), "black", font=font, align="center")
+            
+        for i in range(self.n):
+            delta_by_digit = (len(str(i))-1)*5
+            draw.text((delta/3 - delta_by_digit, i*converted_cell_size+margin/2 + delta - margin/8),
+                      str(i), "black", font=font, align="center")
+        
+        # draw board info
+        for i in range(self.n):
+            for j in range(self.n):
+                if self.board[i][j]==EMPTY:
+                    continue
+        
+                radius = converted_cell_size*0.3
+                
+                color = ["black", "white"][self.board[i][j]]
+                draw.ellipse((i*converted_cell_size+margin/2+delta - radius, j*converted_cell_size+margin/2+delta - radius, 
+                              i*converted_cell_size+margin/2+delta + radius, j*converted_cell_size+margin/2+delta + radius),
+                             color)
+        
+        img.save(IMG_PATH)
         
