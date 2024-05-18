@@ -6,6 +6,7 @@ from utils import file_utils
 
 
 EMPTY = "."
+IMG_PATH = file_utils.join_path(settings.RESOURCE_DIR_PATH, "gomoku_temp.jpg")
 class Gomoku:
     def __init__(self, n: int) -> None:
         self.n = n
@@ -61,20 +62,20 @@ class Gomoku:
             rev += "\n"+"".join(map(str, l))
         return rev
         
-    def get_formatted_board(self):
+    def get_formatted_board(self) -> str:
         rev = "".join(map(lambda x: self.get_fomatted_element(x), self.board[0]))
         for l in self.board[1:]:
             rev += "\n" + "".join(map(lambda x: self.get_fomatted_element(x), l))
         return rev
     
-    def get_fomatted_element(self, tar: int|str):
+    def get_fomatted_element(self, tar: int|str) -> str:
         COLORS = ["⚪", "⚫"]
         return COLORS[tar] if isinstance(tar, int) else "🟦"
 
-    def make_board_img(self) -> str:
+    def make_board_img(self) -> None:
         cell_size = 30
         size = self.n*cell_size
-        img = Image.new("RGB", (size, size), (255, 255, 255))
+        img = Image.new("RGB", (size, size), (234, 212, 151))
         font = ImageFont.load_default()
         font.size = 20
         
@@ -94,10 +95,14 @@ class Gomoku:
         # draw index
         delta = converted_cell_size/2
         for i in range(self.n):
-            draw.text((i*converted_cell_size+margin/2 + delta - margin/10, delta/3 - 2), str(i), "black", font=font, align="center")
+            delta_by_digit = (len(str(i))-1)*5
+            draw.text((i*converted_cell_size+margin/2 + delta - margin/10 - delta_by_digit, delta/3 - 2),
+                      str(i), "black", font=font, align="center")
             
         for i in range(self.n):
-            draw.text((delta/3, i*converted_cell_size+margin/2 + delta - margin/8), str(i), "black", font=font, align="center")
+            delta_by_digit = (len(str(i))-1)*5
+            draw.text((delta/3 - delta_by_digit, i*converted_cell_size+margin/2 + delta - margin/8),
+                      str(i), "black", font=font, align="center")
         
         # draw board info
         for i in range(self.n):
@@ -105,13 +110,12 @@ class Gomoku:
                 if self.board[i][j]==EMPTY:
                     continue
         
-                radius = converted_cell_size*0.4
+                radius = converted_cell_size*0.3
                 
-                color = ["black", "red"][self.get_turn()]
+                color = ["black", "white"][self.board[i][j]]
                 draw.ellipse((i*converted_cell_size+margin/2+delta - radius, j*converted_cell_size+margin/2+delta - radius, 
                               i*converted_cell_size+margin/2+delta + radius, j*converted_cell_size+margin/2+delta + radius),
                              color)
         
-        fp = file_utils.join_path(settings.RESOURCE_DIR_PATH, "gomoku_temp.jpg")
-        img.save(fp)
-        return fp
+        img.save(IMG_PATH)
+        

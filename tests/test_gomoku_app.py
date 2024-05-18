@@ -46,5 +46,6 @@ def test_gomoku():
     g6.put_piece(4, 4)
     assert g6.winner == None
 
-    g6.make_board_img()
+    g7 = gomoku_app.Gomoku(19)
+    g7.make_board_img()
  
