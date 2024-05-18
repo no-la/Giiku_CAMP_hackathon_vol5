@@ -13,6 +13,7 @@ class TestCog(commands.Cog):
     
     @commands.command()
     async def test01(self, ctx: commands.Context):
+        text = ctx.message.content.split()[1]
         await ctx.send("test01が呼ばれました")
 
     @commands.command()

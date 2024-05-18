@@ -11,19 +11,43 @@ class Gomoku:
         self.count = 0
         self.win_num = 5
     
-    def put_piece(self, x: int, y: int):
+    def get_turn(self):
+        """0が先手番"""
+        return self.count&1
+    
+    def put_piece(self, x: int, y: int, set_winner):
         """駒を(x, y)におく"""
         if not (0<=x<self.n and 0<=y<self.n):
             raise IndexError(f"碁盤の外に置こうとしています。 (x, y)={x, y}")
         if self.board[x][y]!=EMPTY:
             raise ValueError(f"すでに置かれています {self.board[x][y]} at ({x, y})")
         
-        self.board[x][y] = COLORS[self.count^1]
+        self.board[x][y] = self.get_turn()
+        
+        if self.judge():
+            set_winner(self.get_turn())
+        else:
+            self.count += 1
+            if self.count == self.n**2:
+                set_winner(-1)
     
-    def judge(self, x: int, y: int):
-        """(x, y)に置いた時の勝敗の判定"""
-        for dx, dy in [[1, -1],[-1, 1],[-1, -1],[1, 1]]:
-            for i in range(-self.win_num+1, self.win_num):
-                nx, ny = x+dx*i, y+dy*i
-                if self.board[nx][ny]:
-                    ...
+    def judge(self):
+        """ゲームの決着の判定"""
+        for x in range(self.n):
+            for y in range(self.n):
+                for dx, dy in [[1, -1], [1, 1], [1, 0], [0, 1]]:
+                    for i in range(1, self.win_num):
+                        nx, ny = x+dx*i, y+dy*i
+                        if not (0<=nx<self.n and 0<=ny<self.n):
+                            break
+                        if self.board[nx][ny] != self.get_turn():
+                            break
+                    else:
+                        return True
+        return False
+    
+    def __str__(self) -> str:
+        rev = "".join(map(str, self.board[0]))
+        for l in self.board[1:]:
+            rev += "\n"+"".join(map(str, l))
+        return rev
