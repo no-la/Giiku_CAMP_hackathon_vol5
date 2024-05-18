@@ -2,7 +2,7 @@ from discord.ext import commands
 
 import logging
 
-async def mysend(self: commands.Context, content, **kwargs):
+async def mysend(self: commands.Context, content="", **kwargs):
     print(f"[SEND] `{content}` to {self.channel.name}")
     await self.send_origin(content, **kwargs)
     
