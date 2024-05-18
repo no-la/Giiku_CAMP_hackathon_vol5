@@ -25,7 +25,14 @@ class JustTimeAppCog(commands.Cog):
     @commands.command(name="register")
     async def register(self, ctx: commands.Context):
         id = ctx.author.id
+        if not self.app_manager.can_add_participant(id):
+            member = await ctx.guild.fetch_member(id)
+            name = member.nick if member.nick is not None else member.name
+            await ctx.send("{name}さんはすでに参加済みです。")
+            return
         self.app_manager.add_participant(id)
+        await ctx.send(f"{ctx.author.mention}さんを参加者として登録しました。")
+        await ctx.message.add_reaction("✅")
     
     @commands.command(name="start")
     async def start(self, ctx: commands.Context):
@@ -51,7 +58,17 @@ class JustTimeAppCog(commands.Cog):
             return
         elif self.app_manager.state == just_time_app.JustTimeAppState.REGISTERING:
             print(f"state = {self.app_manager.state}")
-            self.app_manager.add_participant(message.author.id)
+
+            id = message.author.id
+            if not self.app_manager.can_add_participant(id):
+                member = await message.guild.fetch_member(id)
+                name = member.nick if member.nick is not None else member.name
+                await message.channel.send(f"{message.author.mention}さんはすでに参加済みです。")
+                return
+            self.app_manager.add_participant(id)
+            await message.channel.send(f"{message.author.mention}さんを参加者として登録しました。")
+            await message.add_reaction("✅")
+
             return
         elif self.app_manager.state == just_time_app.JustTimeAppState.PLAYING:
             print(f"state = {self.app_manager.state}")

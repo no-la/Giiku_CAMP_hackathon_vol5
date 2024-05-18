@@ -42,6 +42,9 @@ class JustTimeAppManager:
         self.start_time = None
         self.participant_ids = set() 
         self.participant_times = defaultdict(None)
+        
+    def can_add_participant(self, participant_id: int) -> bool:
+        return self.state == JustTimeAppState.REGISTERING and participant_id not in self.participant_ids
     def add_participant(self, participant_id: int) -> None:
         self.participant_ids.add(participant_id)
         print(f"Added participant: {participant_id}")
