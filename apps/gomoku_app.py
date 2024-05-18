@@ -3,13 +3,12 @@ from utils import file_utils
 
 
 EMPTY = "."
-COLORS = ["W", "B"]
 class Gomoku:
     def __init__(self, n: int) -> None:
         self.n = n
         self.board = [[EMPTY]*n for _ in range(n)]
         self.count = 0
-        self.win_num = 5
+        self.win_num = 3
         self.winner = None
     
     def get_turn(self):
@@ -39,13 +38,14 @@ class Gomoku:
         for x in range(self.n):
             for y in range(self.n):
                 for dx, dy in [[1, -1], [1, 1], [1, 0], [0, 1]]:
-                    for i in range(1, self.win_num):
+                    for i in range(self.win_num):
                         nx, ny = x+dx*i, y+dy*i
                         if not (0<=nx<self.n and 0<=ny<self.n):
                             break
                         if self.board[nx][ny] != self.get_turn():
                             break
                     else:
+                        print("fin gomoku", (x, y), "to", (nx, ny))
                         return True
         return False
     
@@ -57,3 +57,14 @@ class Gomoku:
         for l in self.board[1:]:
             rev += "\n"+"".join(map(str, l))
         return rev
+        
+    def get_formatted_board(self):
+        rev = "".join(map(lambda x: self.get_fomatted_element(x), self.board[0]))
+        for l in self.board[1:]:
+            rev += "\n" + "".join(map(lambda x: self.get_fomatted_element(x), l))
+        return rev
+    
+    def get_fomatted_element(self, tar: int|str):
+        COLORS = ["⚪", "⚫"]
+        return COLORS[tar] if isinstance(tar, int) else "🟦"
+        

@@ -39,3 +39,10 @@ def test_gomoku():
     # print(g5)
     g5.put_piece(2, 4)
     assert g5.winner == None
+    
+    g6 = gomoku_app.Gomoku(5)
+    for i in range(4):
+        g6.board[i][i] = 1
+    g6.put_piece(4, 4)
+    assert g6.winner == None
+ 
