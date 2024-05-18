@@ -3,8 +3,9 @@ import discord
 from discord import app_commands
 
 class TestCog(commands.Cog):
-    def __init__(self) -> None:
+    def __init__(self, bot) -> None:
         super().__init__()
+        self.bot = bot
     
     @commands.Cog.listener()
     async def on_ready(self):
@@ -12,6 +13,7 @@ class TestCog(commands.Cog):
     
     @commands.command()
     async def test01(self, ctx: commands.Context):
+        text = ctx.message.content.split()[1]
         await ctx.send("test01が呼ばれました")
 
     @commands.command()
@@ -35,4 +37,4 @@ class MyModal(discord.ui.Modal, title="modalのテスト"):
 
 
 async def setup(bot):
-    await bot.add_cog(TestCog())
+    await bot.add_cog(TestCog(bot))
