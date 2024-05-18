@@ -9,11 +9,11 @@ from .context import file_utils
 
 def test_hoge1():
     app = numer_on_app.NumerOnApp("123")
-    assert app.n == 0
-    app.increment()
-    assert app.n == 1
-    app.increment()
-    assert app.n == 2
+    assert app.judge_count == 0
+    app.judge("111")
+    assert app.judge_count == 1
+    app.judge("122")
+    assert app.judge_count == 2
     
 
 def test_judge1():
@@ -27,3 +27,10 @@ def test_judge2():
     eat, bite = app.judge("322")
     assert eat == 1
     assert bite == 2
+
+def test_judge3():
+    app = numer_on_app.NumerOnApp("123")
+    with pytest.raises(ValueError) as e:
+        app.judge("222222")
+    assert e.type == ValueError 
+    
