@@ -3,8 +3,9 @@ import discord
 from discord import app_commands
 
 class TestCog(commands.Cog):
-    def __init__(self) -> None:
+    def __init__(self, bot) -> None:
         super().__init__()
+        self.bot = bot
     
     @commands.Cog.listener()
     async def on_ready(self):
@@ -35,4 +36,4 @@ class MyModal(discord.ui.Modal, title="modalのテスト"):
 
 
 async def setup(bot):
-    await bot.add_cog(TestCog())
+    await bot.add_cog(TestCog(bot))
