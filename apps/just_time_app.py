@@ -38,18 +38,24 @@ class JustTimeApp:
 class JustTimeAppManager:
     def __init__(self) -> None:
         self.app = JustTimeApp()
+        self.state = JustTimeAppState.INIT
         self.start_time = None
-        self.participant_ids = {} 
+        self.participant_ids = set() 
         self.participant_times = defaultdict(None)
     def add_participant(self, participant_id: int) -> None:
         self.participant_ids.add(participant_id)
-
+        print(f"Added participant: {participant_id}")
+    
+    def register(self) -> None:
+        self.state = JustTimeAppState.REGISTERING
+    
     def start(self, start_time: datetime) -> None:
         self.start_time = start_time
+        self.state = JustTimeAppState.PLAYING
     
-    def record_time(self,participant_id: int, time: datetime) -> None:
+    def record_time(self, participant_id: int, time: datetime) -> None:
         # Precondition
-        if participant_id not in self.participant_times:
+        if participant_id not in self.participant_ids:
             raise ValueError("The participant is not registered.")
         
         diff = time - self.start_time

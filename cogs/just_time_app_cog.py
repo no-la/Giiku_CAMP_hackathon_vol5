@@ -20,6 +20,7 @@ class JustTimeAppCog(commands.Cog):
     async def numer_on(self, ctx: commands.Context):
         await ctx.send("Just Timeを開始します。`/start`が実行されてから5秒経ったと思うタイミングでメッセージを送ってください！\nまずは参加者を登録します。参加する方は何かしらメッセージを送ってください\n`/start`を入力すると参加者の募集が終わり計測が始まります。")
         self.app_manager = just_time_app.JustTimeAppManager()
+        self.app_manager.register()
     
     @commands.command(name="register")
     async def register(self, ctx: commands.Context):
@@ -37,20 +38,38 @@ class JustTimeAppCog(commands.Cog):
         if message.author.bot:
             return
         if message.content[0] == self.bot.command_prefix:
-            print(f"bot prefix. message.content[0] {self.bot.command_prefix}")
+            print(f"bot prefix. message[0]: {message.content[0]}")
             return
-
-        if self.app_manager is not None:
-            participant = message.author.nick
-            if participant is None:
-                participant = message.author.name
-            print(f"participant = {participant}")
+        if self.app_manager is None:
+            return
+        
+        if self.app_manager.state == just_time_app.JustTimeAppState.INIT:
+            print(f"state = {self.app_manager.state}")
+            return
+        elif self.app_manager.state == just_time_app.JustTimeAppState.FINISHED:
+            print(f"state = {self.app_manager.state}")
+            return
+        elif self.app_manager.state == just_time_app.JustTimeAppState.REGISTERING:
+            print(f"state = {self.app_manager.state}")
+            self.app_manager.add_participant(message.author.id)
+            return
+        elif self.app_manager.state == just_time_app.JustTimeAppState.PLAYING:
+            print(f"state = {self.app_manager.state}")
+            participant_id = message.author.id
             time = message.created_at
-            self.app_manager.record_time(participant, time)
-            print(f"participant = {participant}, time = {time}")
+            self.app_manager.record_time(message.author.id, time)
+            print(f"participant_id = {participant_id}, time = {time}")
+
             if self.app_manager.is_finished():
-                for participant, diff in self.app_manager.get_diff():
-                    await message.channel.send(f"{participant}さんの時間は{diff:.2f}秒でした。")
+                for participant_id, diff in self.app_manager.get_diff():
+                    member = await message.guild.fetch_member(participant_id)
+                    if member is not None:
+                        name = member.nick if member.nick is not None else member.name
+                        print(f"member: {repr(member)}, name: {name}")
+                        await message.channel.send(f"{name}さんの時間は{diff:.2f}秒でした。")
+                    else:
+                        print(f"Member with ID {participant_id} not found")
+
 
 
 
