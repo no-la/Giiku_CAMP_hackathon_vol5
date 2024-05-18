@@ -25,22 +25,22 @@ class NumerOnAppCog(commands.Cog):
         self.app_manager.start()
         await ctx.send(f"origin = {self.app_manager.get_origin()}") 
         
-    @commands.command(name="j")
-    async def judge(self, ctx: commands.context, target: str = ""):
-        # Precondition
-        if target == "":
-            await ctx.send(f"引数として数字を入力してください")
-        if not target.isdigit():
-            await ctx.send(f"数字を入力してください")
-            return
-    
-        try:
-            eat, bite = self.app_manager.judge(target)
-            await ctx.send(f"Target: {target}, Eat: {eat}, Bite: {bite}")
-        except ValueError as e:
-            print(e)
-        
-
+#     @commands.command(name="j")
+#     async def judge(self, ctx: commands.context, target: str = ""):
+#         # Precondition
+#         if target == "":
+#             await ctx.send(f"引数として数字を入力してください")
+#         if not target.isdigit():
+#             await ctx.send(f"数字を入力してください")
+#             return
+#     
+#         try:
+#             eat, bite = self.app_manager.judge(target)
+#             await ctx.send(f"Target: {target}, Eat: {eat}, Bite: {bite}")
+#         except ValueError as e:
+#             print(e)
+#         
+# 
     @commands.Cog.listener()
     async def on_message(self, message: discord.Message):
         if message.author.bot:
@@ -51,9 +51,7 @@ class NumerOnAppCog(commands.Cog):
         
         if self.app_manager is not None:
             await message.channel.send(f"state = {self.app_manager.state}")
-            if self.app_manager.state == numer_on_app.NumerOnAppState.PLAYING:
-                await message.channel.send(f"playing")
-            
+
             if self.app_manager.state == numer_on_app.NumerOnAppState.INIT:
                 return
             if self.app_manager.state == numer_on_app.NumerOnAppState.PLAYING:
