@@ -1,7 +1,7 @@
 import argparse
 
 from config import settings
-from utils import file_utils, logging_utils
+from utils import file_utils
 
 
 parser = argparse.ArgumentParser(
@@ -21,10 +21,12 @@ if __name__ == '__main__':
         tests\\test_NEWAPP.py
         """
         pathes = [
-            f"{settings.APP_DIR_PATH}{args.newapp}.py",
-            f"{settings.COG_DIR_PATH}cogs\\d_{args.newapp}.py",
-            f"{settings.TEST_DIR_PATH}test_{args.newapp}.py",
+            file_utils.join_path(settings.APP_DIR_PATH, f"{args.newapp}.py"),
+            file_utils.join_path(settings.COG_DIR_PATH, f"{args.newapp}_cog.py"),
+            file_utils.join_path(settings.TEST_DIR_PATH, f"test_{args.newapp}.py"),
         ]
+        
+        
         # appがまだ存在しないことを確認する
         for p in pathes:
             if file_utils.is_path(p):
@@ -66,10 +68,10 @@ if __name__ == '__main__':
                 
         # tests\\context.py
         content = f"\nfrom apps import {args.newapp}"
-        fp = f"{settings.TEST_DIR_PATH}context.py"
+        fp = file_utils.join_path(settings.TEST_DIR_PATH, "context.py")
         if content not in file_utils.read_file(fp):
             file_utils.write_file(file_path=fp,
                                   content=content, mode="a")
         
         
-        logging_utils.log_list("Created Below Files", pathes)
+        print("Created Below Files", "-"*20, *pathes, sep="\n")

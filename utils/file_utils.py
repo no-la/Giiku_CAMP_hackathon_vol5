@@ -16,8 +16,8 @@ def is_path(file_path: str) -> bool:
         return False
     return Path(file_path).exists()
 
-def join_path(self: str, *other):
-    return Path.joinpath(self, *other)
+def join_path(parent: str, *other: str|list):
+    return Path(parent).joinpath(*other)
 
 def get_extension(file_path: str) -> str:
     """ファイルの拡張子を返す"""
@@ -239,7 +239,6 @@ def write_jsonfile(file_path: str, json_dict: dict):
 
 
 
-# ---------------------------------------------
 # tempディレクトリの操作
 # ---------------------------------------------
 def get_new_tempfile_num(extension: str):
