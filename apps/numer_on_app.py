@@ -34,6 +34,9 @@ class NumerOnApp:
         for digit in targets_counts:
             if digit in origin_counts:
                 bite += min(targets_counts[digit], origin_counts[digit])
+
+        # Eatの分を引く
+        bite -= eat
         
         # judge_countをインクリメント
         self.judge_count += 1
