@@ -24,14 +24,19 @@ class NumerOnAppCog(commands.Cog):
         await ctx.send(f"origin = {self.app.origin}")
         
     @commands.command(name="j")
-    async def judge(self, ctx: commands.context, digit: str = ""):
-        if digit == "":
+    async def judge(self, ctx: commands.context, target: str = ""):
+        # Precondition
+        if target == "":
             await ctx.send(f"引数として数字を入力してください")
-        if not digit.isdigit():
+        if not target.isdigit():
             await ctx.send(f"数字を入力してください")
             return
-        await ctx.send("start")
-        await ctx.send(f"digit = {digit}")
+    
+        try:
+            eat, bite = self.app.judge(target)
+            await ctx.send(f"Target: {target}, Eat: {eat}, Bite: {bite}")
+        except ValueError as e:
+            print(e)
         
 
     @commands.Cog.listener()
