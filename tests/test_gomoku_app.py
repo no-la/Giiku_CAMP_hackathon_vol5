@@ -45,4 +45,6 @@ def test_gomoku():
         g6.board[i][i] = 1
     g6.put_piece(4, 4)
     assert g6.winner == None
+
+    g6.make_board_img()
  

@@ -16,5 +16,5 @@ CONFIG_DIR_PATH = file_utils.join_path(ROOT_DIR_PATH, "config")
 APP_DIR_PATH = file_utils.join_path(ROOT_DIR_PATH, "apps")
 COG_DIR_PATH = file_utils.join_path(ROOT_DIR_PATH, "cogs")
 TEST_DIR_PATH = file_utils.join_path(ROOT_DIR_PATH, "tests")
-SOURCE_DIR_PATH = file_utils.join_path(ROOT_DIR_PATH, "resources")
+RESOURCE_DIR_PATH = file_utils.join_path(ROOT_DIR_PATH, "resources")
 
