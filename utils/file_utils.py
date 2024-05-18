@@ -5,7 +5,7 @@ import mimetypes
 import csv
 import json
 
-import settings
+from config import settings
 
 # ---------------------------------------------
 # ファイル全般の操作
@@ -15,6 +15,9 @@ def is_path(file_path: str) -> bool:
     if not isinstance(file_path, str):
         return False
     return Path(file_path).exists()
+
+def join_path(self: str, *other):
+    return Path.joinpath(self, *other)
 
 def get_extension(file_path: str) -> str:
     """ファイルの拡張子を返す"""
