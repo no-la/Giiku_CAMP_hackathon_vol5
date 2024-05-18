@@ -18,10 +18,14 @@ class JustTimeAppCog(commands.Cog):
 
     @commands.command(name="ju")
     async def numer_on(self, ctx: commands.Context):
-        await ctx.send("Just Timeを開始します。5秒経ったら何らかのメッセージを送ってください。\n準備ができたら`/start`を入力してください。計測が始まります。")
+        await ctx.send("Just Timeを開始します。`/start`が実行されてから5秒経ったと思うタイミングでメッセージを送ってください！\nまずは参加者を登録します。参加する方は何かしらメッセージを送ってください\n`/start`を入力すると参加者の募集が終わり計測が始まります。")
         self.app_manager = just_time_app.JustTimeAppManager()
-        self.app_manager.start()
-        
+    
+    @commands.command(name="register")
+    async def register(self, ctx: commands.Context):
+        id = ctx.author.id
+        self.app_manager.add_participant(id)
+    
     @commands.command(name="start")
     async def start(self, ctx: commands.Context):
         start_time = ctx.message.created_at
@@ -42,29 +46,11 @@ class JustTimeAppCog(commands.Cog):
                 participant = message.author.name
             print(f"participant = {participant}")
             time = message.created_at
-            print(f"time = {time}")
-            diff = self.app_manager.judge(time)
-            print(f"diff = {diff}")
-            await message.channel.send(f"{participant}さんの時間は{diff:.2f}秒でした。")
-#             print(f"state = {self.app_manager.state}")
-# 
-#             if self.app_manager.state == numer_on_app.NumerOnAppState.INIT:
-#                 return
-#             if self.app_manager.state == numer_on_app.NumerOnAppState.PLAYING:
-#                 print(f"start judge")
-#                 eat, bite = self.app_manager.judge(message.content)
-#                 print(f"Target: {message.content}, Eat: {eat}, Bite: {bite}")
-#                 await message.channel.send(f"Eat: {eat}, Bite: {bite}")
-#                 if eat == 3:
-#                     winner = message.author.nick
-#                     if winner is None:
-#                         winner = message.author.name
-#                     await message.channel.send(f"クリア！勝者は{winner}です！\n正解するまでに: {self.app_manager.get_judge_count()}回かかりました")
-#                     self.app_manager.state = numer_on_app.NumerOnAppState.FINISHED
-#                 return
-#             else:
-#                 print(f"Game is finished.")
-#                 return
+            self.app_manager.record_time(participant, time)
+            print(f"participant = {participant}, time = {time}")
+            if self.app_manager.is_finished():
+                for participant, diff in self.app_manager.get_diff():
+                    await message.channel.send(f"{participant}さんの時間は{diff:.2f}秒でした。")
 
 
 

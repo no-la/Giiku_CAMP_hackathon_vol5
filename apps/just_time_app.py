@@ -1,8 +1,15 @@
 import datetime
+from collections import defaultdict
+from enum import Enum
 
 from config import settings
 from utils import file_utils
 
+class JustTimeAppState(Enum):
+    INIT = 0
+    REGISTERING = 1
+    PLAYING = 2
+    FINISHED = 3
 class JustTimeApp:
     def __init__(self) -> None:
         self.time = 0
@@ -32,14 +39,24 @@ class JustTimeAppManager:
     def __init__(self) -> None:
         self.app = JustTimeApp()
         self.start_time = None
+        self.participant_ids = {} 
+        self.participant_times = defaultdict(None)
+    def add_participant(self, participant_id: int) -> None:
+        self.participant_ids.add(participant_id)
 
     def start(self, start_time: datetime) -> None:
         self.start_time = start_time
     
-    def judge(self, time: datetime) -> float:
-        diff = time - self.start_time
+    def record_time(self,participant_id: int, time: datetime) -> None:
+        # Precondition
+        if participant_id not in self.participant_times:
+            raise ValueError("The participant is not registered.")
         
-        return diff.seconds + diff.microseconds / 1_000_000
+        diff = time - self.start_time
+        self.participant_times[participant_id] = (diff.seconds + diff.microseconds / 1_000_000)
+        
+    def is_finished(self) -> bool:
+        return len(self.participant_times) == len(self.participant_ids)
 
-    def stop(self) -> None:
-        self.app.stop()
+    def get_diff(self) -> list[tuple[str, float]]:
+        return [(str(participant_id), time) for participant_id, time in self.participant_times.items()]
