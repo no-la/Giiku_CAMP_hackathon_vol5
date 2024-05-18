@@ -16,9 +16,9 @@ class NumerOnAppCog(commands.Cog):
     async def on_ready(self):
         print("Cogs", "NumerOnAppCog is reloaded.")
     
-    # ここに具体的な処理を書く
 
-    @commands.command()
+
+    @commands.command(name="nu")
     async def numer_on(self, ctx: commands.Context):
         await ctx.send("start numer_on")
 
