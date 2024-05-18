@@ -1,3 +1,5 @@
+from PIL import Image, ImageDraw
+
 from config import settings
 from utils import file_utils
 
@@ -67,4 +69,8 @@ class Gomoku:
     def get_fomatted_element(self, tar: int|str):
         COLORS = ["⚪", "⚫"]
         return COLORS[tar] if isinstance(tar, int) else "🟦"
-        
+
+    def make_board_img(self):
+        x = 30
+        img = Image.new("RGB", (self.n*x, self.n*x), (256, 256, 256))
+        img.save()
