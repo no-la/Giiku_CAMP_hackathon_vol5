@@ -44,6 +44,65 @@ class NumerOnAppState(Enum):
     INIT = 0
     PLAYING = 1
     FINISHED = 2
+class NumerOnAppManager:
+    def __init__(self, digit: int) -> None:
+        self.digit = digit
+        self.state = NumerOnAppState.INIT
+        self.app = None
+
+    def start(self) -> str:
+        self.state = NumerOnAppState.PLAYING
+        self.app = NumerOnApp(random_number(self.digit))
+        return self.app.origin
+    
+    def update(self, message: str) -> None:
+        if self.state == NumerOnAppState.INIT:
+            raise ValueError("The game has not started yet.")
+        elif self.state == NumerOnAppState.FINISHED:
+            raise ValueError("The game has already finished.")
+        else :
+             self.judge(message)
+
+    def judge(self, target: str) -> tuple[int, int]:
+        if self.state != NumerOnAppState.PLAYING:
+            raise ValueError("The game is not in progress.")
+        return self.app.judge(target)
+
+    def finish(self) -> None:
+        self.state = NumerOnAppState.FINISHED
+
+    def is_finished(self) -> bool:
+        return self.state == NumerOnAppState.FINISHED
+
+    def is_playing(self) -> bool:
+        return self.state == NumerOnAppState.PLAYING
+
+    def is_init(self) -> bool:
+        return self.state == NumerOnAppState.INIT
+
+    def get_judge_count(self) -> int:
+        return self.app.judge_count
+
+    def get_origin(self) -> str:
+        return self.app.origin
+
+    def get_digit(self) -> int:
+        return self.digit
+
+    def get_state(self) -> NumerOnAppState:
+        return self.state
+
+    def reset(self) -> None:
+        self.state = NumerOnAppState.INIT
+        self.app = None
+
+    def __str__(self) -> str:
+        return f"NumerOnAppManager(digit={self.digit}, state={self.state}, app={self.app})"
+
+    def __repr__(self) -> str:
+        return self.__str__()
+
+
     
     
 def random_number(digit: int) -> str:
