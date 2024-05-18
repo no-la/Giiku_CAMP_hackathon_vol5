@@ -13,7 +13,7 @@ class {1}Cog(commands.Cog):
     
     @commands.Cog.listener()
     async def on_ready(self):
-        logging_utils.log("Cogs", "{1}Cog is reloaded.")
+        print("Cogs", "{1}Cog is reloaded.")
     
     # ここに具体的な処理を書く
 
