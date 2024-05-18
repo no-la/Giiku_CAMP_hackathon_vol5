@@ -33,19 +33,20 @@ if __name__ == '__main__':
                 raise FileExistsError(f"既に存在するapp名が渡されました", p)
         
         
-        TEMPLETE_DIR_PATH = f"{settings.CONFIG_DIR_PATH}\\templetes\\"
+        TEMPLETE_DIR_PATH = file_utils.join_path(settings.CONFIG_DIR_PATH, "templetes")
         # apps\\NEWAPP.py
         file_utils.write_file(
             pathes[0],
             file_utils.read_file(
-                f"{TEMPLETE_DIR_PATH}app_templete.txt")
+                file_utils.join_path(TEMPLETE_DIR_PATH, "app_templete.txt")
             )
+        )
         
         # cogs\\d_NEWAPP.py
         file_utils.write_file(
             pathes[1],
             file_utils.read_file(
-                f"{TEMPLETE_DIR_PATH}cog_templete.txt"
+                file_utils.join_path(TEMPLETE_DIR_PATH, "cog_templete.txt")
                 ).format(
                     args.newapp,
                     "".join(
@@ -61,7 +62,7 @@ if __name__ == '__main__':
         file_utils.write_file(
             pathes[2],
             file_utils.read_file(
-                f"{TEMPLETE_DIR_PATH}test_templete.txt").format(
+                file_utils.join_path(TEMPLETE_DIR_PATH, "test_templete.txt")).format(
                     args.newapp
                 )
             )
