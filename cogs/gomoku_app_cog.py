@@ -20,23 +20,23 @@ class GomokuAppCog(commands.Cog):
     @commands.command(name="gomoku")
     async def start(self, ctx: commands.Context):
         if self.gomoku is not None:
-            await ctx.send(f"You already have a game.", embed=self.make_gomoku_embed(),
+            await ctx.send(f"進行中のゲームがあります", embed=self.make_gomoku_embed(),
                            file=discord.File(gomoku_app.IMG_PATH))
             return
         
         self.gomoku = gomoku_app.Gomoku(19)
         self.gomoku.make_board_img()
-        await ctx.send(f"Gomoku started.", embed=self.make_gomoku_embed(),
+        await ctx.send(embed=self.make_gomoku_embed(),
                        file=discord.File(gomoku_app.IMG_PATH))
     
     @commands.command(name="put")
     async def put_piece(self, ctx: commands.Context, x: int, y: int):
         if self.gomoku is None:
-            await ctx.send("Please start it with `/gomoku`.")
+            await ctx.send("`/gomoku`コマンドでゲームを始めてください")
             return
         
         try:
-            self.gomoku.put_piece(x, y)
+            self.gomoku.put_piece(y, x)
             self.gomoku.make_board_img()
             embed = self.make_gomoku_embed()
             if self.gomoku.winner is not None:
@@ -51,11 +51,12 @@ class GomokuAppCog(commands.Cog):
         embed = discord.Embed()
         turn_text = ("先手番", "後手番")[self.gomoku.get_turn()]
         embed.title = f"{turn_text} ({self.gomoku.count+1}手目)"
+        embed.description = "`/put [行番号] [列番号]`で手番を進めてください"
         if self.gomoku.winner is not None:
-            embed.title = f"Winner {self.gomoku.get_turn()}"
+            embed.title = f"{turn_text[:2]}の勝ち"
+            embed.description = "ゲームは終了しました"
         # embed.description = self.gomoku.get_formatted_board()
         embed.color = 0x1111aa
-        embed.description = "`/put [行番号] [列番号]`で手番を進めてください"
         return embed
     
 async def setup(bot):
