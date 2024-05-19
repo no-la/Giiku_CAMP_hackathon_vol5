@@ -64,6 +64,8 @@ class JustTimeAppManager:
         diff = time - self.start_time
         self.participant_times[participant_id] = (diff.seconds + diff.microseconds / 1_000_000)
         
+    def finish(self) -> None:
+        self.state = JustTimeAppState.FINISHED
     def is_finished(self) -> bool:
         return len(self.participant_times) == len(self.participant_ids)
 
