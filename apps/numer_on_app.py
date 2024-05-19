@@ -51,7 +51,14 @@ class NumerOnAppManager:
     def __init__(self, digit: int) -> None:
         self.digit = digit
         self.state = NumerOnAppState.INIT
+        self.participant_ids = set()
         self.app = None
+
+    def can_add_participant(self, participant_id: int) -> bool:
+        return participant_id not in self.participant_ids
+    def add_participant(self, participant_id: int) -> None:
+        self.participant_ids.add(participant_id)
+        print(f"Added participant: {participant_id}")
 
     def start(self) -> str:
         self.state = NumerOnAppState.PLAYING
