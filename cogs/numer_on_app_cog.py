@@ -6,7 +6,9 @@ from config import settings
 from apps import numer_on_app
 
 from enum import Enum
+from apps import stats_app
 
+TITLE = "数字当てゲーム"
 class NumerOnAppCog(commands.Cog):
     def __init__(self, bot: commands.Bot) -> None:
         super().__init__()
@@ -42,12 +44,21 @@ class NumerOnAppCog(commands.Cog):
                 eat, bite = self.app_manager.judge(message.content)
                 print(f"Target: {message.content}, Eat: {eat}, Bite: {bite}")
                 await message.channel.send(f"Eat: {eat}, Bite: {bite}")
+                
+                # register participant
+                self.app_manager.add_participant(message.author.id)
+                
                 if eat == 3:
                     winner = message.author.nick
+                    winner_id = message.author.id
                     if winner is None:
                         winner = message.author.name
                     await message.channel.send(f"クリア！勝者は{winner}です！\n正解するまでに: {self.app_manager.get_judge_count()}回かかりました")
                     self.app_manager.state = numer_on_app.NumerOnAppState.FINISHED
+                    print(f"TITLE: {TITLE}")
+                    print(f"participant_ids: {self.app_manager.participant_ids}")
+                    print(f"winner_id: {winner_id}")
+                    stats_app.save_stats(TITLE, list(self.app_manager.participant_ids), winner_id) 
                 return
             else:
                 print(f"Game is finished.")

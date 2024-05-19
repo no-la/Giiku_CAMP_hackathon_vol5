@@ -4,8 +4,9 @@ from discord.ext import commands
 
 from config import settings
 from apps import just_time_app
+from apps import stats_app
 
-
+TITLE = "Just Time"
 class JustTimeAppCog(commands.Cog):
     def __init__(self, bot: commands.Bot) -> None:
         super().__init__()
@@ -18,7 +19,7 @@ class JustTimeAppCog(commands.Cog):
 
     @commands.command(name="ju")
     async def numer_on(self, ctx: commands.Context):
-        await ctx.send("Just Timeを開始します。`/start`が実行されてから5秒経ったと思うタイミングでメッセージを送ってください！\nまずは参加者を登録します。参加する方は何かしらメッセージを送ってください\n`/start`を入力すると参加者の募集が終わり計測が始まります。")
+        await ctx.send("Just Timeを開始します。5秒経ったタイミングでメッセージを送ってください！\nまずは参加者を登録します。参加する方は何かのメッセージを送ってください\n`/start`を入力すると参加者の募集が終わり計測が始まります。")
         self.app_manager = just_time_app.JustTimeAppManager()
         self.app_manager.register()
     
@@ -84,6 +85,8 @@ class JustTimeAppCog(commands.Cog):
                         name = member.nick if member.nick is not None else member.name
                         print(f"member: {repr(member)}, name: {name}")
                         await message.channel.send(f"{name}さんの時間は{diff:.2f}秒でした。")
+                        self.app_manager.set_result()
+                        stats_app.save_stats(TITLE, list(self.app_manager.participant_ids), self.app_manager.winner_id)
                     else:
                         print(f"Member with ID {participant_id} not found")
 
