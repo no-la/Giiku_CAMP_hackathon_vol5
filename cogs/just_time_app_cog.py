@@ -84,6 +84,7 @@ class JustTimeAppCog(commands.Cog):
                         name = member.nick if member.nick is not None else member.name
                         print(f"member: {repr(member)}, name: {name}")
                         await message.channel.send(f"{name}さんの時間は{diff:.2f}秒でした。")
+                        self.app_manager.finish()
                     else:
                         print(f"Member with ID {participant_id} not found")
 
