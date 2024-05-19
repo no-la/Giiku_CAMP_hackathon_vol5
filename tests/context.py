@@ -10,3 +10,4 @@ from apps import numer_on_app
 from apps import gomoku_app
 
 from apps import just_time_app
+from apps import help_app
