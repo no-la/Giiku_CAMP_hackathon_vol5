@@ -4,8 +4,9 @@ from discord.ext import commands
 
 from config import settings
 from apps import just_time_app
+from apps import stats_app
 
-
+TITLE = "JustTime"
 class JustTimeAppCog(commands.Cog):
     def __init__(self, bot: commands.Bot) -> None:
         super().__init__()
@@ -84,7 +85,8 @@ class JustTimeAppCog(commands.Cog):
                         name = member.nick if member.nick is not None else member.name
                         print(f"member: {repr(member)}, name: {name}")
                         await message.channel.send(f"{name}さんの時間は{diff:.2f}秒でした。")
-                        self.app_manager.finish()
+                        self.app_manager.set_result()
+                        stats_app.save_stats(TITLE, list(self.app_manager.participant_ids), self.app_manager.winner_id)
                     else:
                         print(f"Member with ID {participant_id} not found")
 

@@ -42,6 +42,8 @@ class JustTimeAppManager:
         self.start_time = None
         self.participant_ids = set() 
         self.participant_times = defaultdict(None)
+        self.winner_id = None
+        self.target_time = 5
         
     def can_add_participant(self, participant_id: int) -> bool:
         return self.state == JustTimeAppState.REGISTERING and participant_id not in self.participant_ids
@@ -63,8 +65,16 @@ class JustTimeAppManager:
         
         diff = time - self.start_time
         self.participant_times[participant_id] = (diff.seconds + diff.microseconds / 1_000_000)
-        
-    def finish(self) -> None:
+    
+    def set_result(self) -> None:
+
+        for id in self.participant_times:
+            self.participant_times[id] -= self.target_time
+            self.participant_times[id] = abs(self.participant_times[id])
+        sorted_dict = sorted(self.participant_times.items(), key=lambda x: x[1])
+        closest_participant_id = sorted_dict[0][0]
+
+        self.winner_id = closest_participant_id
         self.state = JustTimeAppState.FINISHED
     def is_finished(self) -> bool:
         return len(self.participant_times) == len(self.participant_ids)
