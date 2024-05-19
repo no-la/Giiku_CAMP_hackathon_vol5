@@ -20,7 +20,12 @@ def save_stats(game_name: str, participant_ids: list, winner_id: int):
         勝者のdiscordアカウントのid
     """
     d = load_stats()
-    d["stats"].append(datetime.datetime.now().strftime('%Y/%m/%d %H:%M:%S'), game_name, participant_ids, winner_id)
+    d["stats"].append({
+        "time": datetime.datetime.now().strftime('%Y/%m/%d %H:%M:%S'), 
+        "name": game_name,
+        "participant_ids": participant_ids,
+        "winner_id": winner_id
+        })
     file_utils.write_jsonfile(STATS_JSON_PATH, d)
     
 def load_stats() -> dict:
