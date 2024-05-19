@@ -27,7 +27,7 @@ class StatsAppCog(commands.Cog):
                 d_for_user[v["name"]][1] += v["winner_id"]==ctx.author.id
         
         embed = discord.Embed(title="過去のデータ", description="", color=0x99ba99)
-        embed.set_author(name=ctx.author.name, icon_url=ctx.author.avatar.url)
+        embed.set_author(name=ctx.author.nick or ctx.author.name, icon_url=ctx.author.avatar.url)
         for k in d_for_user:
             embed.add_field(name=f"{k}", value=f"- 参加回数 : {d_for_user[k][0]}\n- 勝利数 : {d_for_user[k][1]}\n")
         
