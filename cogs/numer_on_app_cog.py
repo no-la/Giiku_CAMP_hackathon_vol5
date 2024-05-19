@@ -8,7 +8,7 @@ from apps import numer_on_app
 from enum import Enum
 from apps import stats_app
 
-TITLE = "NumerOn"
+TITLE = "数字当てゲーム"
 class NumerOnAppCog(commands.Cog):
     def __init__(self, bot: commands.Bot) -> None:
         super().__init__()
