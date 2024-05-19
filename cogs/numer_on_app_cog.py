@@ -46,8 +46,7 @@ class NumerOnAppCog(commands.Cog):
                 await message.channel.send(f"Eat: {eat}, Bite: {bite}")
                 
                 # register participant
-                if can_add_participant(message.author.id):
-                    self.numer_on_app_manager.add_participant(message.author.id)
+                self.app_manager.add_participant(message.author.id)
                 
                 if eat == 3:
                     winner = message.author.nick
