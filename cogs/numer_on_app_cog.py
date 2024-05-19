@@ -55,7 +55,10 @@ class NumerOnAppCog(commands.Cog):
                         winner = message.author.name
                     await message.channel.send(f"クリア！勝者は{winner}です！\n正解するまでに: {self.app_manager.get_judge_count()}回かかりました")
                     self.app_manager.state = numer_on_app.NumerOnAppState.FINISHED
-                    stats_app.save_stats(TITLE, self.app_manager.participant_ids, winner) 
+                    print(f"TITLE: {TITLE}")
+                    print(f"participant_ids: {self.app_manager.participant_ids}")
+                    print(f"winner_id: {winner_id}")
+                    stats_app.save_stats(TITLE, list(self.app_manager.participant_ids), winner_id) 
                 return
             else:
                 print(f"Game is finished.")
